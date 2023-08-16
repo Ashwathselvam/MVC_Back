@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
-
+var CorsPolicy = "CorsPolicy";
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -14,13 +14,13 @@ builder.Services.AddDbContext<DataContext>(opt=>
     opt.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
-builder.Services.AddCors(opt =>
+builder.Services.AddCors(options =>
 {
-    opt.AddPolicy("CorsPolicy", policy =>
-    {
-        policy.AllowAnyMethod().AllowAnyHeader().WithOrigins("http://localhost:3000");
-    });
-
+    options.AddPolicy(name: CorsPolicy,
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader();
+        });
 });
 
 var app = builder.Build();
@@ -31,9 +31,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
 app.UseHttpsRedirection();
-
+app.UseCors(CorsPolicy);
 app.UseAuthorization();
  
 app.MapControllers();
