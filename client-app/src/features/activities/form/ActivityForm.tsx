@@ -59,6 +59,7 @@ function ActivityForm({
           name="category"
         />
         <Form.Input
+          type="date"
           placeholder="Date"
           value={activity.date}
           name="date"
